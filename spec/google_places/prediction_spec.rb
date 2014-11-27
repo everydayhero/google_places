@@ -46,6 +46,13 @@ describe GooglePlaces::Prediction, vcr: { cassette_name: 'list_predictions'}  do
 
       GooglePlaces::Prediction.list_by_input('query', api_key, retry_options: { max: 10, delay: 15 })
     end
+
+    it "initiates a request with `components`" do
+      options = request_params(components: 'country:us')
+      expect(GooglePlaces::Request).to receive(:predictions_by_input).with(options)
+
+      GooglePlaces::Prediction.list_by_input('query', api_key, country_restriction: 'us')
+    end
   end
 
   def request_params(options = {})

@@ -28,6 +28,7 @@ module GooglePlaces
     # @option options [Object] :retry_options[:status] ([])
     # @option options [Integer] :retry_options[:max] (0) the maximum retries
     # @option options [Integer] :retry_options[:delay] (5) the delay between each retry in seconds
+    # @option options [String] :country_restriction ('') restrict the results to a specific country
     def self.list_by_input(input, api_key, options = {})
       lat = options.delete(:lat)
       lng = options.delete(:lng)
@@ -35,6 +36,7 @@ module GooglePlaces
       radius = options.delete(:radius)
       retry_options = options.delete(:retry_options) || {}
       types  = options.delete(:types)
+      country_restriction = options.delete(:country_restriction)
 
       options = {
         :input => input,
@@ -55,6 +57,10 @@ module GooglePlaces
 
       if language
         options[:language] = language
+      end
+
+      if country_restriction
+        options[:components] = "country:#{country_restriction}"
       end
 
       request(:predictions_by_input, options)
